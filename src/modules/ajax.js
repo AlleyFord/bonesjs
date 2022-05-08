@@ -2,6 +2,9 @@
   vanilla js ajax
   quasi-production ready
 */
+
+
+
 class AJAX {
   get(url, args) {
     return this._request('get', url, args);
@@ -69,4 +72,4 @@ class AJAX {
 
 
 
-export { AJAX };
+export default AJAX;

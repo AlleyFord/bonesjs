@@ -1,0 +1,14 @@
+const path = require('path');
+
+module.exports = {
+  entry: './src/bones.js',
+  mode: 'production',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bones.js',
+    library: {
+      name: 'Bones',
+      type: 'umd',
+    },
+  },
+};

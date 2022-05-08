@@ -1,5 +1,8 @@
 /*
 */
+
+
+
 const Config = {
   cfg: {
     // defaults go here from modules
@@ -29,4 +32,4 @@ const Config = {
 
 
 
-export { Config };
+export default Config;

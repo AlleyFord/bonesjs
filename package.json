@@ -2,9 +2,12 @@
   "name": "bonesjs",
   "version": "1.0.0",
   "description": "jQuery-inspired Vanilla JS for modern browsers",
-  "main": "bones.js",
+  "main": "dist/bones.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "uglifyjs src/bones.js -o dist/bones.js",
+    "watch": "webpack"
   },
   "repository": {
     "type": "git",
@@ -20,5 +23,9 @@
   "bugs": {
     "url": "https://github.com/AlleyFord/bonesjs/issues"
   },
-  "homepage": "https://github.com/AlleyFord/bonesjs#readme"
+  "homepage": "https://github.com/AlleyFord/bonesjs#readme",
+  "devDependencies": {
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2"
+  }
 }

@@ -1,6 +1,9 @@
 /*
   cookie setter & getter
 */
+
+
+
 class Cookie {
   #defaults = {
     duration: 30 * 24 * 60 * 60, // 1 month
@@ -58,4 +61,4 @@ class Cookie {
 
 
 
-export { Cookie };
+export default Cookie;

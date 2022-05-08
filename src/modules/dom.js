@@ -2,7 +2,10 @@
   allows you to perform jquery-style actions w/ vanilla js
   quasi-production ready
 */
-import { Config } from './config.js';
+
+
+
+import Config from './config.js';
 
 
 

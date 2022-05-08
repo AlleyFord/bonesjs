@@ -1,7 +1,9 @@
 /*
   event subscriptions
-  production ready
 */
+
+
+
 class EventHandler {
   #events = {};
   #name = false;
@@ -47,4 +49,4 @@ function Event(name) {
 
 
 
-export { Event };
+export default Event;

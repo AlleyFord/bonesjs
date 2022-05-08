@@ -2,6 +2,9 @@
   quick uri helpers
   production ready
 */
+
+
+
 class Browser_URI {
   set(path) {
     window.history.replaceState({}, '', path);
@@ -56,4 +59,4 @@ class Browser {
 
 
 
-export { Browser };
+export default Browser;
