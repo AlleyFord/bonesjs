@@ -1,0 +1,24 @@
+{
+  "name": "bonesjs",
+  "version": "1.0.0",
+  "description": "jQuery-inspired Vanilla JS for modern browsers",
+  "main": "bones.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlleyFord/bonesjs.git"
+  },
+  "keywords": [
+    "jquery",
+    "vanilla",
+    "js"
+  ],
+  "author": "Josh Alley <alley@alleyford.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlleyFord/bonesjs/issues"
+  },
+  "homepage": "https://github.com/AlleyFord/bonesjs#readme"
+}
