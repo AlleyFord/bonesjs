@@ -3,7 +3,7 @@
   jquery-like vanilla js and more
 */
 
-import Config from './modules/config.js';
+import Scaffold from './scaffold.js';
 import Browser from './modules/browser.js';
 import Cookie from './modules/cookie.js';
 import Event from './modules/event.js';
@@ -15,17 +15,16 @@ import Lazy from './modules/lazy.js';
 
 
 
-class BonesJS {
-  #defaults = {
+class BonesJS extends Scaffold {
+  name = 'Bones';
+
+  defaults = {
     debug: false,
     shortcut: 'B',
     'dom.shortcut': '$',
-    name: 'Bones',
   };
-  opts = {};
 
   #modules = new Map([
-    ['config', Config],
     ['browser', new Browser()],
     ['cookie', new Cookie()],
     ['format', new Format()],
@@ -38,7 +37,9 @@ class BonesJS {
 
 
   constructor(opts) {
-    this.opts = {...this.#defaults, ...opts};
+    super();
+
+    this.apply(opts);
 
     for (const mod of this.#modules) {
       this[mod[0]] = mod[1];
@@ -51,21 +52,21 @@ class BonesJS {
 
 
   init(name) {
-    if (typeof name === 'undefined') name = this.config.get('name');
+    if (typeof name === 'undefined') name = this.name;
 
     if (typeof window !== 'undefined') {
-      if (typeof this.dom !== 'undefined') this[this.config.get('dom.shortcut')] = this.dom;
+      if (typeof this.dom !== 'undefined') this[this.opts['dom.shortcut']] = this.dom;
 
       window[name] = this;
-      window[this.config.get('shortcut')] = window[name];
+      window[this.opts.shortcut] = window[name];
     }
 
     this.event('ready').publish();
   }
 
 
-  debug(...v) {
-    if (this.config.get('debug')) console.log(v);
+  debug(mod, ...v) {
+    if (this.opts.debug) console.log(mod, v);
   }
 }
 

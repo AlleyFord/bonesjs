@@ -4,13 +4,18 @@
 
 
 
-class Cookie {
+import Scaffold from '../scaffold.js';
+
+
+
+class Cookie extends Scaffold {
   DURATION_DAY = 86400;
   DURATION_WEEK = 604800;
   DURATION_MONTH = 18144000;
   DURATION_YEAR = 217728000;
 
-  #defaults = {
+  name = 'Cookie';
+  defaults = {
     duration: this.DURATION_MONTH,
     strict: true,
     domain: false,
@@ -27,38 +32,39 @@ class Cookie {
   }
 
   set(opts) {
-    const options = {...this.#defaults, ...opts};
+    this.apply(opts);
+
     let args = [];
 
-    if (options.key === false) {
+    if (this.opts.key === false) {
       return false;
     }
 
-    if (options.path !== false) {
-      args.push('path=' + options.path);
+    if (this.opts.path !== false) {
+      args.push('path=' + this.opts.path);
     }
 
-    if (options.duration !== false) {
+    if (this.opts.duration !== false) {
       let exp = new Date;
 
-      args.push('max-age=' + options.duration);
-      args.push('expires=' + exp.setTime(exp.getTime() + options.duration));
+      args.push('max-age=' + this.opts.duration);
+      args.push('expires=' + exp.setTime(exp.getTime() + this.opts.duration));
     }
 
-    if (options.domain !== false) {
-      args.push('domain=' + options.domain);
+    if (this.opts.domain !== false) {
+      args.push('domain=' + this.opts.domain);
     }
 
     if (args.strict === true) {
       args.push('SameSite=Strict');
     }
 
-    const pl = options.key + '=' + encodeURIComponent(options.value) +
+    const pl = this.opts.key + '=' + encodeURIComponent(this.opts.value) +
       (args.length ? ';' + args.join(';') : '')
     ;
 
     document.cookie = pl;
-    Bones.debug('bones:cookie ' + pl);
+    Bones.debug(this.name, pl);
 
     return true;
   }

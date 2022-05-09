@@ -4,7 +4,13 @@
 
 
 
-class AJAX {
+import Scaffold from '../scaffold.js';
+
+
+
+class AJAX extends Scaffold {
+  name = 'AJAX';
+
   // quick aliases off the main bones obj
   enable(parent) {
     parent.get = (...args) => this.get(...args);

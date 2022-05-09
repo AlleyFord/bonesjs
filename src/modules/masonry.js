@@ -1,19 +1,20 @@
-class Masonry {
-  #defaults = {
+import Scaffold from '../scaffold.js';
+
+
+
+class Masonry extends Scaffold {
+  name = 'Masonry';
+  defaults = {
     cols: 2,
     selector: '.masonry',
   };
-  opts = {};
 
 
   constructor(one, two) {
+    super();
+
     if (typeof one === 'string') this.init(one, two);
     else this.apply(one);
-  }
-
-
-  apply(opts) {
-    this.opts = {...this.#defaults, ...opts};
   }
 
 

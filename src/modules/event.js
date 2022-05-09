@@ -4,7 +4,13 @@
 
 
 
-class EventHandler {
+import Scaffold from '../scaffold.js';
+
+
+
+class EventHandler extends Scaffold {
+  name = 'EventHandler';
+
   #events = {};
   #name = false;
 

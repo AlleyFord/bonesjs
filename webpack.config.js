@@ -13,6 +13,14 @@ module.exports = {
     filename: 'bones.js',
   },
   optimization: {
-    minimize: false,
+    concatenateModules: true,
+    mangleExports: 'size',
+    mergeDuplicateChunks: true,
+    minimize: true,
+    moduleIds: 'size',
+    nodeEnv: 'production',
+    providedExports: true,
+    removeAvailableModules: true,
+    removeEmptyChunks: true,
   },
 };

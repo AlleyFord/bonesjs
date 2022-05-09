@@ -1,15 +1,18 @@
-class Lazy {
-  #defaults = {
+import Scaffold from '../scaffold.js';
+
+
+
+class Lazy extends Scaffold {
+  name = 'Lazy';
+  defaults = {
     class: 'lazy',
     class_bg: 'lazy-bg',
-    placeholder: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
+    placeholder: 'data:image/gif;base64,R0lGODlhAQABAAAAACw=',
   };
-  opts = {};
-
 
 
   init(opts) {
-    this.opts = {...this.#defaults, ...opts};
+    this.apply(opts);
 
     const Lazy = new IntersectionObserver((en, ob) => {
       en.forEach(e => {
