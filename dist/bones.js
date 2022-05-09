@@ -14,7 +14,7 @@ const Config = {
   },
 
   enable: function(parent) {
-    this.apply(parent.defaults);
+    this.apply(parent.opts);
   },
 
   default: function(opts) {
@@ -921,7 +921,7 @@ class Masonry {
     cols: 2,
     selector: '.masonry',
   };
-  config = {};
+  opts = {};
 
 
   constructor(one, two) {
@@ -1024,12 +1024,14 @@ class Lazy {
 
 
 class BonesJS {
-  defaults = {
+  #defaults = {
     debug: false,
     shortcut: 'B',
     'dom.shortcut': '$',
     name: 'Bones',
   };
+  opts = {};
+
   #modules = new Map([
     ['config', config],
     ['browser', new browser()],
@@ -1044,7 +1046,7 @@ class BonesJS {
 
 
   constructor(opts) {
-    this.defaults = {...this.defaults, ...opts};
+    this.opts = {...this.#defaults, ...opts};
 
     for (const mod of this.#modules) {
       this[mod[0]] = mod[1];

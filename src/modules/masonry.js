@@ -3,7 +3,7 @@ class Masonry {
     cols: 2,
     selector: '.masonry',
   };
-  config = {};
+  opts = {};
 
 
   constructor(one, two) {

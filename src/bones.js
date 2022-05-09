@@ -16,12 +16,14 @@ import Lazy from './modules/lazy.js';
 
 
 class BonesJS {
-  defaults = {
+  #defaults = {
     debug: false,
     shortcut: 'B',
     'dom.shortcut': '$',
     name: 'Bones',
   };
+  opts = {};
+
   #modules = new Map([
     ['config', Config],
     ['browser', new Browser()],
@@ -36,7 +38,7 @@ class BonesJS {
 
 
   constructor(opts) {
-    this.defaults = {...this.defaults, ...opts};
+    this.opts = {...this.#defaults, ...opts};
 
     for (const mod of this.#modules) {
       this[mod[0]] = mod[1];

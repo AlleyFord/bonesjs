@@ -9,7 +9,7 @@ const Config = {
   },
 
   enable: function(parent) {
-    this.apply(parent.defaults);
+    this.apply(parent.opts);
   },
 
   default: function(opts) {
