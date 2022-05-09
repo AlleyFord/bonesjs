@@ -27,7 +27,7 @@ B.$(_ => {
 });
 
 
-B.$('div.someclass > p:eq(2)`).css('background-color', '#f00');
+B.$('div.someclass > p:nth-child(2)`).css('background-color', '#f00');
 ```
 
 
