@@ -9,50 +9,65 @@ import Cookie from './modules/cookie.js';
 import Event from './modules/event.js';
 import Format from './modules/format.js';
 import AJAX from './modules/ajax.js';
-import { DOM, DOMReady } from './modules/dom.js';
+import DOM from './modules/dom.js';
+import Masonry from './modules/masonry.js';
+import Lazy from './modules/lazy.js';
 
 
 
 class BonesJS {
-  DURATION_DAY = 86400;
-  DURATION_WEEK = 604800;
-  DURATION_MONTH = 18144000;
-  DURATION_YEAR = 217728000;
-
-
-  #defaults = {
+  defaults = {
     debug: false,
-    'dom.shortcut': '$B',
+    shortcut: 'B',
+    'dom.shortcut': '$',
+    name: 'Bones',
   };
+  #modules = new Map([
+    ['config', Config],
+    ['browser', new Browser()],
+    ['cookie', new Cookie()],
+    ['format', new Format()],
+    ['event', Event],
+    ['ajax', new AJAX()],
+    ['dom', DOM],
+    ['masonry', new Masonry()],
+    ['lazy', new Lazy()],
+  ]);
 
 
   constructor(opts) {
-    this.Config = Config;
-    this.Config.apply(opts);
+    this.defaults = {...this.defaults, ...opts};
 
-    this.Browser = new Browser();
-    this.Cookie = new Cookie();
-    this.Format = new Format();
-    this.AJAX = new AJAX();
-    this.DOM = DOM;
-    this.DOMReady = DOMReady;
-    this.Event = Event;
+    for (const mod of this.#modules) {
+      this[mod[0]] = mod[1];
+
+      if (typeof this[mod[0]]['enable'] === 'function') this[mod[0]]['enable'](this);
+    }
+
+    return this;
+  }
+
+
+  init(name) {
+    if (typeof name === 'undefined') name = this.config.get('name');
+
+    if (typeof window !== 'undefined') {
+      if (typeof this.dom !== 'undefined') this[this.config.get('dom.shortcut')] = this.dom;
+
+      window[name] = this;
+      window[this.config.get('shortcut')] = window[name];
+    }
+
+    this.event('ready').publish();
   }
 
 
   debug(...v) {
-    if (this.Config.debug) console.log(v);
+    if (this.config.get('debug')) console.log(v);
   }
 }
 
 
 
 const Bones = new BonesJS();
-
-if (typeof window !== 'undefined') window.Bones = Bones;
-
-Bones.Event.publish('Ready');
-
-
-
-export default Bones;
+Bones.init();

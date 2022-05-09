@@ -5,8 +5,13 @@
 
 
 class Cookie {
+  DURATION_DAY = 86400;
+  DURATION_WEEK = 604800;
+  DURATION_MONTH = 18144000;
+  DURATION_YEAR = 217728000;
+
   #defaults = {
-    duration: 30 * 24 * 60 * 60, // 1 month
+    duration: this.DURATION_MONTH,
     strict: true,
     domain: false,
     path: '/',

@@ -1,11 +1,17 @@
 /*
   vanilla js ajax
-  quasi-production ready
 */
 
 
 
 class AJAX {
+  // quick aliases off the main bones obj
+  enable(parent) {
+    parent.get = (...args) => this.get(...args);
+    parent.post = (...args) => this.post(...args);
+    parent.put = (...args) => this.put(...args);
+  }
+
   get(url, args) {
     return this._request('get', url, args);
   }
@@ -18,36 +24,34 @@ class AJAX {
     return this._request('put', url, args);
   }
 
-  async _request(method, url, args = {}) {
-    const head = new Headers();
+  _request(method, url, args = {}) {
+    method = method.toLowerCase();
+
     let body = null;
 
     // headers
-    const hk = Object.keys(args.headers || {});
-
-    hk.forEach((v, k) => {
-      head.append(k, v);
-    });
+    const headers = {...args.headers || {}};
 
     if (args.headers) delete args.headers;
 
     // tweaks to request based on method
     if (method === 'get') {
       if (Object.keys(args).length) {
-        url += '?' . URLSearchParams(args).toString();
+        url += '?' + new URLSearchParams(args).toString();
       }
     }
-    if (method === 'post') {
+    if (['post', 'put'].includes(method)) {
       body = args;
     }
 
-    const req = new Request(url, {
+    return fetch(url, {
       method: method,
-      headers: head,
-      body: body,
-    });
-
-    return await fetch(req)
+      mode: 'cors',
+      cache: 'no-cache',
+      headers: headers,
+      redirect: 'follow',
+      body: body ? JSON.stringify(body) : null,
+    })
     .then(res => {
       const mime = res.headers.get('content-type');
       let body = false;

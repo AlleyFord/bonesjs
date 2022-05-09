@@ -3,11 +3,10 @@
   "version": "1.0.0",
   "description": "jQuery-inspired Vanilla JS for modern browsers",
   "main": "dist/bones.js",
-  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "uglifyjs src/bones.js -o dist/bones.js",
-    "watch": "webpack"
+    "build": "webpack",
+    "watch": "webpack --watch"
   },
   "repository": {
     "type": "git",

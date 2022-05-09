@@ -5,16 +5,6 @@
 
 
 
-import Config from './config.js';
-
-
-
-Config.default({
-  'dom.shortcut': '$$',
-});
-
-
-
 const DOMHelper = {
   sanitizeHTML: html => {
     return html.replace(/javascript:/gi, '').replace(/[^\w-_. ]/gi, c => {
@@ -585,4 +575,4 @@ const DOM = expr => {
 
 
 
-export { DOM, DOMReady };
+export default DOM;

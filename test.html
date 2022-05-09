@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+<title>Test stuff</title>
+</head>
+<body>
+
+
+
+<div id="test1">Test block 1</div>
+<img class="lazy" data-src="dist/af2--logo-icon-only-square.png">
+
+
+<script src="dist/bones.js"></script>
+<script>
+B.$(_ => {
+  // ajax
+  B.get('/', {args:1}).then(ret => console.log(ret));
+
+  // dom manip
+  B.$('#test1').html("test<br>test1");
+
+  // lazy loading
+  B.lazy.init();
+});
+</script>
+</body>
+</html>

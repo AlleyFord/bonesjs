@@ -8,6 +8,10 @@ const Config = {
     // defaults go here from modules
   },
 
+  enable: function(parent) {
+    this.apply(parent.defaults);
+  },
+
   default: function(opts) {
     this.cfg = Object.assign(opts || {}, this.cfg);
   },
@@ -18,6 +22,16 @@ const Config = {
 
   get: function(k) {
     return this.cfg[k] || null;
+  },
+
+  match: function(expr) {
+    let matches = {};
+
+    for (const [k, v] of Object.entries(this.cfg)) {
+      if (expr.test(k)) matches[k] = v;
+    }
+
+    return Object.entries(matches);
   },
 
   set: function(opts, v) {
