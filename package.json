@@ -1,5 +1,5 @@
 {
-  "name": "bonesjs",
+  "name": "@alleyford/bonesjs",
   "version": "1.0.4",
   "description": "jQuery-inspired Vanilla JS for modern browsers",
   "main": "dist/bones.js",
