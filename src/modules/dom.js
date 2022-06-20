@@ -548,12 +548,12 @@ class DOMChain {
   val(v) {
     if (typeof v === 'undefined') {
       return this._returnStatic(node => {
-        return node.getAttribute('value');
+        return node.value;
       });
     }
 
     this._apply(node => {
-      node.setAttribute('value', v);
+      node.value = v;
     });
 
     return this;

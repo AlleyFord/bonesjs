@@ -6,7 +6,7 @@ A totally not-production-ready, yet-another-jQuery-style-but-vanilla-js library 
 # Install
 
 ```
-npm i bonesjs
+npm i @alleyford/bonesjs
 ```
 
 
