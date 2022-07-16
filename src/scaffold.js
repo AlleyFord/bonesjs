@@ -3,6 +3,9 @@ class Scaffold {
   defaults = {};
   opts = {};
 
+  // constants
+  //...
+
   apply(opts) {
     this.opts = {...this.defaults, ...opts};
   }

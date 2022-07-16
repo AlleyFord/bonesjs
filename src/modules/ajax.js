@@ -11,6 +11,13 @@ import Scaffold from '../scaffold.js';
 class AJAX extends Scaffold {
   name = 'AJAX';
 
+  MIME_JSON = 'application/json';
+  MIME_JS = 'application/javascript';
+  MIME_TXT_JSON = 'text/json';
+  MIME_TXT_JS = 'text/javascript';
+
+
+
   // quick aliases off the main bones obj
   enable(parent) {
     parent.get = (...args) => this.get(...args);
@@ -63,10 +70,10 @@ class AJAX extends Scaffold {
       let body = false;
 
       if (mime && (
-           mime.indexOf('application/json') !== -1
-        || mime.indexOf('text/json') !== -1
-        || mime.indexOf('application/javascript') !== -1
-        || mime.indexOf('text/javascript') !== -1
+           mime.indexOf(this.MIME_JSON) !== -1
+        || mime.indexOf(this.MIME_TXT_JSON) !== -1
+        || mime.indexOf(this.MIME_JS) !== -1
+        || mime.indexOf(this.MIME_TXT_JS) !== -1
       )) {
         body = res.json();
       }

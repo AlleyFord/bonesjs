@@ -102,6 +102,10 @@ class DOMChain {
     });
   }
 
+  submit(callback) {
+    return this.on('submit', null, callback);
+  }
+
   on(event, target, callback, opts) {
     if (typeof target === 'function') {
       callback = target;
@@ -146,23 +150,44 @@ class DOMChain {
 
 
   /**
+   * helpers
+   */
+
+   serialize() {
+    let data = {};
+    const form = new FormData(this._nodes[0]);
+
+    for (const [k, v] of form) {
+      data[k] = v;
+    }
+
+    return data;
+  }
+
+
+
+  /**
    * selector manipulation
    */
 
   filter(expr) {
+    let newDOM = this._clone();
+
     let _nodes = [];
 
-    this._apply(node => {
-      _nodes.push(this._flatten(node.querySelectorAll(expr)));
+    newDOM._apply(node => {
+      _nodes.push(newDOM._flatten(node.querySelectorAll(expr)));
     });
 
-    this._setNodes(this._flatten(_nodes));
+    newDOM._setNodes(newDOM._flatten(_nodes));
 
-    return this;
+    return newDOM;
   }
+
   find(expr) {
     return this.filter(expr);
   }
+
   has(expr) {
     return this.filter(expr);
   }
@@ -473,6 +498,22 @@ class DOMChain {
     return this;
   }
 
+  removeAttr(k) {
+    this._apply(node => {
+      node.removeAttribute(k);
+    });
+
+    return this;
+  }
+
+  enable() {
+    return this.removeAttr('disabled');
+  }
+
+  disable() {
+    return this.attr('disabled', 'disabled');
+  }
+
 
 
   /**
@@ -506,6 +547,14 @@ class DOMChain {
   after(v) {
     this._apply(node => {
       node.insertAdjacentHTML('afterend', v);
+    });
+
+    return this;
+  }
+
+  replace(v) {
+    this._apply(node => {
+      node.outerHTML = v;
     });
 
     return this;

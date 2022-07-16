@@ -35,6 +35,10 @@ class BonesJS extends Scaffold {
     ['lazy', new Lazy()],
   ]);
 
+  EMOJI_THUMBSUP = '👍';
+  EMOJI_CHECK = '✔️';
+  EMOJI_CROSS = '❌';
+
 
   constructor(opts) {
     super();
@@ -55,7 +59,7 @@ class BonesJS extends Scaffold {
     if (typeof name === 'undefined') name = this.name;
 
     if (typeof window !== 'undefined') {
-      if (typeof this.dom !== 'undefined') this[this.opts['dom.shortcut']] = this.dom;
+      if (typeof this.dom !== 'undefined') window[this.opts['dom.shortcut']] = this.dom;
 
       window[name] = this;
       window[this.opts.shortcut] = window[name];
@@ -72,5 +76,4 @@ class BonesJS extends Scaffold {
 
 
 
-const Bones = new BonesJS();
-Bones.init();
+export default BonesJS;

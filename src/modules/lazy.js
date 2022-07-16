@@ -33,9 +33,15 @@ class Lazy extends Scaffold {
       });
     });
 
-    [].slice.call(document.querySelectorAll(`.${this.opts.class}`)).forEach(e => {
+    [].slice.call(document.querySelectorAll(`.${this.opts.class},.${this.opts.class_bg}`)).forEach(e => {
       Lazy.observe(e);
-      e.src = this.opts.placeholder;
+
+      if (e.classList.contains(this.opts.class_bg)) {
+        e.style.backgroundImage = `url(${this.opts.placeholder})`;
+      }
+      else {
+        e.src = this.opts.placeholder;
+      }
     });
   }
 }
