@@ -22,6 +22,10 @@ const DOMHelper = {
 
 
 class DOMChain {
+  TEMPLATE_LITERAL_LEFT = '%%';
+  TEMPLATE_LITERAL_RIGHT = '%%';
+
+
   constructor(expr) {
     if (typeof expr !== 'undefined') {
       this._setNodes(this._flatten(document.querySelectorAll(expr)), true);
@@ -95,7 +99,7 @@ class DOMChain {
    */
 
   enter(callback) {
-    return this.on('keyup', false, function (e) {
+    return this.on('keyup', null, function (e) {
       if (e.keyCode === 13) {
         callback.call(this, e);
       }
@@ -145,6 +149,14 @@ class DOMChain {
 
   click(callback) {
     return this.on('click', null, callback);
+  }
+
+  focus(callback) {
+    return this.on('focus', null, callback);
+  }
+
+  blur(callback) {
+    return this.on('blur', null, callback);
   }
 
 
@@ -244,16 +256,18 @@ class DOMChain {
   }
 
   parent() {
+    let newDOM = this._clone();
     let _nodes = [];
 
     this._apply(node => {
       _nodes.push(node.parentNode);
     });
 
-    this._setNodes(this._flatten(_nodes));
+    newDOM._setNodes(newDOM._flatten(_nodes));
 
-    return this;
+    return newDOM;
   }
+  // todo parentS with filter
 
   children() {} //@TODO
   siblings() {} //@TODO
@@ -348,6 +362,9 @@ class DOMChain {
     });
 
     return this;
+  }
+  style(k, v) {
+    return this.css(k, v);
   }
 
   hide() {
@@ -560,6 +577,12 @@ class DOMChain {
     return this;
   }
 
+  remove(v) {
+    this._apply(node => {
+      node.remove();
+    });
+  }
+
 
 
   /**
@@ -607,6 +630,17 @@ class DOMChain {
 
     return this;
   }
+
+  template(sel, vars) {
+    const t = new DOMChain(sel);
+    let html = t.html();
+
+    for (const [k, v] of Object.entries(vars || {})) {
+      html = html.replace(new RegExp(`${this.TEMPLATE_LITERAL_LEFT}\\s*${k}\\s*${this.TEMPLATE_LITERAL_RIGHT}`, 'gm'), v);
+    }
+
+    return this.html(html);
+  }
 }
 
 
@@ -618,7 +652,13 @@ const DOMReady = function(callback) {
 
 
 const DOM = expr => {
+  // allow extending
+  if (typeof expr === 'undefined') return DOMChain.prototype;
+
+  // domready
   if (typeof expr === 'function') return DOMReady(expr);
+
+  // selector chain
   return new DOMChain(expr);
 }
 

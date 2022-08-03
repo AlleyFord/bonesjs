@@ -24,6 +24,8 @@ class BonesJS extends Scaffold {
     'dom.shortcut': '$',
   };
 
+  util = {};
+
   #modules = new Map([
     ['browser', new Browser()],
     ['cookie', new Cookie()],
@@ -66,6 +68,18 @@ class BonesJS extends Scaffold {
     }
 
     this.event('ready').publish();
+  }
+
+
+  extend(mod) {
+    const inst = this.#modules.get(mod);
+
+    // special cases
+    if (mod === 'dom') return b.dom();
+    if (mod === 'event') return b.event();
+    if (mod === 'bones') return this.prototype;
+
+    return (!inst[1]) ? {} : inst[1].prototype;
   }
 
 
