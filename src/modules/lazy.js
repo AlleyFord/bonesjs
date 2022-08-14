@@ -4,10 +4,20 @@ import Scaffold from '../scaffold.js';
 
 class Lazy extends Scaffold {
   name = 'Lazy';
+
+  breakpoints = {
+    sm: 640,
+    md: 768,
+    lg: 1024,
+    xl: 1280,
+    '2xl': 1536,
+  };
+
   defaults = {
     class: 'lazy',
     class_bg: 'lazy-bg',
     placeholder: 'data:image/gif;base64,R0lGODlhAQABAAAAACw=',
+    sizes: [],
   };
 
 

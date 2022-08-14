@@ -188,7 +188,15 @@ class DOMChain {
     let _nodes = [];
 
     newDOM._apply(node => {
-      _nodes.push(newDOM._flatten(node.querySelectorAll(expr)));
+      const descendants = node.querySelectorAll(expr);
+      const match = node.matches(expr);
+
+      if (match) {
+        _nodes.push(newDOM._flatten(node));
+      }
+      if (descendants && descendants.length) {
+        _nodes.push(newDOM._flatten(descendants));
+      }
     });
 
     newDOM._setNodes(newDOM._flatten(_nodes));
@@ -253,6 +261,28 @@ class DOMChain {
   }
   get(i) {
     return this.eq(i);
+  }
+
+  gt(i) {
+    let newDOM = this._clone();
+    let _nodes = [];
+
+    newDOM._setNodes(newDOM._flatten(this._nodes.slice(i)));
+
+    return newDOM;
+  }
+
+  lt(i) { // TODO
+    let newDOM = this._clone();
+    let _nodes = [];
+
+    for (let x = i - 1; x => 0; x--) {
+      _nodes.push(this._nodes[x]);
+    }
+
+    newDOM._setNodes(newDOM._flatten(_nodes));
+
+    return newDOM;
   }
 
   parent() {
@@ -636,10 +666,10 @@ class DOMChain {
     let html = t.html();
 
     for (const [k, v] of Object.entries(vars || {})) {
-      html = html.replace(new RegExp(`${this.TEMPLATE_LITERAL_LEFT}\\s*${k}\\s*${this.TEMPLATE_LITERAL_RIGHT}`, 'gm'), v);
+      html = html.replace(new RegExp(`${t.TEMPLATE_LITERAL_LEFT}\\s*${k}\\s*${t.TEMPLATE_LITERAL_RIGHT}`, 'gm'), v);
     }
 
-    return this.html(html);
+    return this._nodes && this._nodes.length ? this.html(html) : html; // allows direct invocation
   }
 }
 

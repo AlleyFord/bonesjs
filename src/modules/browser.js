@@ -42,6 +42,20 @@ class Browser_QS {
 
 
 
+class Browser_Hash {
+  hash = {};
+
+  constructor() {
+    this.hash = window.location.hash;
+  }
+
+  get() {
+    return this.hash;
+  }
+}
+
+
+
 class Browser {
   URI;
   queryString;
@@ -49,6 +63,7 @@ class Browser {
   constructor() {
     this.URI = new Browser_URI();
     this.queryString = new Browser_QS();
+    this.hash = new Browser_Hash();
   }
 }
 
