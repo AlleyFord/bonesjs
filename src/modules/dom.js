@@ -22,13 +22,20 @@ const DOMHelper = {
 
 
 class DOMChain {
-  TEMPLATE_LITERAL_LEFT = '%%';
-  TEMPLATE_LITERAL_RIGHT = '%%';
+  TL_L = '%%';
+  TL_R = '%%';
 
 
   constructor(expr) {
-    if (typeof expr !== 'undefined') {
+    if (expr instanceof HTMLElement || Array.isArray(expr) || this._isNodeList(expr)) {
+      this._setNodes(this._flatten(expr), true);
+    }
+
+    else if (typeof expr !== 'undefined') {
       this._setNodes(this._flatten(document.querySelectorAll(expr)), true);
+    }
+
+    else {
     }
   }
 
@@ -39,6 +46,10 @@ class DOMChain {
     newDOM._nodes = this._nodes;
 
     return newDOM;
+  }
+
+  copy() {
+    return this._clone();
   }
 
   _isNodeList(nodes) {
@@ -92,6 +103,10 @@ class DOMChain {
     }
   }
 
+  get length() {
+    return this._nodes.length;
+  }
+
 
 
   /**
@@ -110,10 +125,10 @@ class DOMChain {
     return this.on('submit', null, callback);
   }
 
-  on(event, target, callback, opts) {
-    if (typeof target === 'function') {
-      callback = target;
-      target = false;
+  on(event, isolated, callback, opts) {
+    if (typeof isolated === 'function') {
+      callback = isolated;
+      isolated = false;
     }
 
     let options = {
@@ -123,28 +138,27 @@ class DOMChain {
     };
 
     this._apply((node, i) => {
-      let newDOM = this._clone().eq(i);
-
       // need to limit scope before continuing
-      if (target) {
-        node.addEventListener(event, e => {
-          if (e.target.matches(target)) {
-            newDOM = new DOMChain();
-            newDOM._nodes = newDOM._firstNodes = [e.target];
-
-            callback.call(newDOM, e);
+      if (isolated) {
+        node.addEventListener(event, el => {
+          if (el.target.matches(isolated)) {
+            callback.call(new DOMChain(el.target), el);
           }
         }, {...options, ...opts});
       }
 
       else {
-        node.addEventListener(event, e => {
-          callback.call(newDOM, e);
+        node.addEventListener(event, el => {
+          callback.call(this._clone().eq(i), el);
         }, {...options, ...opts});
       }
     });
 
     return this;
+  }
+
+  change(callback) {
+    return this.on('change', null, callback);
   }
 
   click(callback) {
@@ -170,7 +184,16 @@ class DOMChain {
     const form = new FormData(this._nodes[0]);
 
     for (const [k, v] of form) {
-      data[k] = v;
+      if (!data.hasOwnProperty(k)) {
+        data[k] = v;
+      }
+      else {
+        if (!Array.isArray(data[k])) {
+          data[k] = [data[k]];
+        }
+
+        data[k].push(v);
+      }
     }
 
     return data;
@@ -182,20 +205,28 @@ class DOMChain {
    * selector manipulation
    */
 
-  filter(expr) {
+  filter(expr, match_descendants) {
     let newDOM = this._clone();
 
     let _nodes = [];
 
     newDOM._apply(node => {
-      const descendants = node.querySelectorAll(expr);
+      let descendants = [];
+
+      if (match_descendants) {
+        descendants = node.querySelectorAll(expr);
+      }
+
       const match = node.matches(expr);
 
       if (match) {
         _nodes.push(newDOM._flatten(node));
       }
-      if (descendants && descendants.length) {
-        _nodes.push(newDOM._flatten(descendants));
+
+      if (match_descendants) {
+        if (descendants && descendants.length) {
+          _nodes.push(newDOM._flatten(descendants));
+        }
       }
     });
 
@@ -204,12 +235,28 @@ class DOMChain {
     return newDOM;
   }
 
-  find(expr) {
-    return this.filter(expr);
+  only(expr) {
+    return this.filter(expr, false);
   }
 
-  has(expr) {
-    return this.filter(expr);
+  find(expr) {
+    return this.filter(expr, true);
+  }
+
+  has(expr) { // this still doesn't work like i think it should
+    let _nodes = [];
+
+    this._apply(node => {
+      const descendants = node.querySelectorAll(expr);
+
+      if (descendants && descendants.length) {
+        _nodes.push(this._flatten(node));
+      }
+    });
+
+    this._setNodes(this._flatten(_nodes));
+
+    return this;
   }
 
   closest(expr) {
@@ -253,11 +300,13 @@ class DOMChain {
   prev() {} //@TODO
 
   eq(i) {
+    let newDOM = this._clone();
+
     if (this._nodes.length && typeof this._nodes[i] !== 'undefined') {
-      this._setNodes([this._nodes[i]]);
+      newDOM._setNodes(newDOM._flatten([this._nodes[i]]));
     }
 
-    return this;
+    return newDOM;
   }
   get(i) {
     return this.eq(i);
@@ -285,6 +334,8 @@ class DOMChain {
     return newDOM;
   }
 
+  //parents() == practical usage for selector-driven closest()
+
   parent() {
     let newDOM = this._clone();
     let _nodes = [];
@@ -303,8 +354,8 @@ class DOMChain {
   siblings() {} //@TODO
 
   each(callback) {
-    this._apply(node => {
-      callback.call(this, node);
+    this._apply((node, i) => {
+      callback.call(this.eq(i), node);
     });
 
     return this;
@@ -498,6 +549,17 @@ class DOMChain {
     return this.outerHeight(true);
   }
 
+  dimensions() { // @TODO this breaks convention for node lists
+    return {
+      height: this.height(),
+      width: this.width(),
+      outerHeight: this.outerHeight(),
+      outerWidth: this.outerWidth(),
+      innerHeight: this.innerHeight(),
+      innerWidth: this.innerWidth(),
+    };
+  }
+
   scrollTop(v) {
     if (typeof v !== 'undefined') {
       return this._returnStatic(node => {
@@ -513,7 +575,7 @@ class DOMChain {
   }
 
   position() {
-    this._returnStatic(node => {
+    return this._returnStatic(node => {
       const rect = node.getBoundingClientRect();
 
       return {
@@ -545,6 +607,10 @@ class DOMChain {
     return this;
   }
 
+  data(k, v) {
+    return this.attr(`data-${k}`, v);
+  }
+
   removeAttr(k) {
     this._apply(node => {
       node.removeAttribute(k);
@@ -561,6 +627,32 @@ class DOMChain {
     return this.attr('disabled', 'disabled');
   }
 
+  isChecked() {
+    return this._returnStatic(node => {
+      return node.checked;
+    });
+  }
+
+  deselect() {
+    this._apply(node => {
+      node.selected = false;
+      node.removeAttribute('selected');
+    });
+
+    return this;
+  }
+  select() {
+    this._apply(node => {
+      node.selected = true;
+      node.setAttribute('selected', 'selected');
+    });
+
+    return this;
+  }
+
+  id(kv) {
+    return this.attr('id', kv);
+  }
 
 
   /**
@@ -636,12 +728,12 @@ class DOMChain {
   text(v) {
     if (typeof v === 'undefined') {
       return this._returnStatic(node => {
-        return node.textContent;
+        return node.innerText;
       });
     }
 
     this._apply(node => {
-      node.textContent = v;
+      node.innerText = v;
     });
 
     return this;
@@ -666,7 +758,7 @@ class DOMChain {
     let html = t.html();
 
     for (const [k, v] of Object.entries(vars || {})) {
-      html = html.replace(new RegExp(`${t.TEMPLATE_LITERAL_LEFT}\\s*${k}\\s*${t.TEMPLATE_LITERAL_RIGHT}`, 'gm'), v);
+      html = html.replace(new RegExp(`${t.TL_L}\\s*${k}\\s*${t.TL_R}`, 'gm'), v);
     }
 
     return this._nodes && this._nodes.length ? this.html(html) : html; // allows direct invocation

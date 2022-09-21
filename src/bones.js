@@ -83,6 +83,11 @@ class BonesJS extends Scaffold {
   }
 
 
+  randomNumber(prefix) {
+    return (prefix || '') + String(Math.floor(Math.random() * (9999999 - 1000000 + 1)) + 1000000);
+  }
+
+
   debug(mod, ...v) {
     if (this.opts.debug) console.log(mod, v);
   }
